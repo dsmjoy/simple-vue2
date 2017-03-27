@@ -1,6 +1,8 @@
 <template lang="html">
-    <Hello></Hello>
-    <Card></Card>
+    <div id="page" class="page">
+        <Hello></Hello>
+        <Card></Card>
+    </div>
 </template>
 
 <script>

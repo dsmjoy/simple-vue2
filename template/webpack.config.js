@@ -51,19 +51,21 @@ module.exports = {
             //  vue-loader 配置， 新版vue-loader 整合了 vue-style-loader
             {
                 test: /\.vue$/,
-                loader: 'vue-loader',
-                options: {
-                // ExtractTextPlugin 插件，单独提取css
-                  loaders: {
-                    scss: ExtractTextPlugin.extract({
-                        use: 'css-loader!sass-loader!postcss-loader',
-                        fallback: 'vue-style-loader'
-                    }),
-                    css: ExtractTextPlugin.extract({
-                        loader: 'css-loader!postcss-loader',
-                        fallback: 'vue-style-loader'
-                    })
-                  }
+                use: {
+                    loader: 'vue-loader',
+                    options: {
+                      // ExtractTextPlugin 插件，单独提取css
+                        loaders: {
+                            scss: ExtractTextPlugin.extract({
+                                use: 'css-loader!sass-loader!postcss-loader',
+                                fallback: 'vue-style-loader'
+                            }),
+                            css: ExtractTextPlugin.extract({
+                                loader: 'css-loader!postcss-loader',
+                                fallback: 'vue-style-loader'
+                            })
+                        }
+                    }
                 }
             },
             // 图片
@@ -115,18 +117,6 @@ module.exports = {
     ],
     devServer: {
       host: '127.0.0.1',
-      port: 80,
-      proxy: {
-        '/api/': {
-          target: 'http://127.0.0.1:8080',
-          changeOrigin: true,
-          pathRewrite: {
-            '^/api': ''
-          }
-        }
-      },
-    //   historyApiFallback: {
-    //     index: url.parse(options.dev ? '/assets/' : publicPath).pathname
-    //   }
-    },
+      port: 80
+    }
 }

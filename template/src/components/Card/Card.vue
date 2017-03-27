@@ -3,14 +3,14 @@
 
         <div class="card__hd">
             <p class="card__title">
-                card component
+                {{ name }} component
             </p>
         </div>
 
         <div class="card__bd"></div>
 
         <div class="card__ft"></div>
-        
+
     </section>
 </template>
 

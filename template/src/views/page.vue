@@ -6,8 +6,8 @@
 </template>
 
 <script>
-import Hello from '../componenents/Hello/Hello.vue'
-import Card from '../componenents/Hello/Card.vue'
+import Hello from '../components/Hello/Hello.vue'
+import Card from '../components/Card/Card.vue'
 
 export default {
     components: {

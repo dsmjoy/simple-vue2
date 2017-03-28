@@ -70,7 +70,7 @@ module.exports = {
             },
             // 图片
             {
-                test: /\.(png|jpg|gif)(\?.+)?$/,
+                test: /\.(png|jpg|gif|svg)(\?.+)?$/,
                 use: {
                     loader: 'url-loader',
                     options: {
@@ -81,7 +81,7 @@ module.exports = {
             },
             // 字体
             {
-                test: /\.(eot|ttf|woff|woff2|svg|svgz)(\?.+)?$/,
+                test: /\.(eot|ttf|woff|woff2)(\?.+)?$/,
                 exclude: /favicon\.png$/,
                 use: [{
                     loader: 'url-loader',

@@ -1,19 +1,34 @@
 const path = require('path')
 
+const glob = require('glob')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
-module.exports = {
-    // entry: './src/main.js',  // 单入口
-    entry: {
-        main: './src/main.js',
-        vendor: './src/vendor.js'
-    },
+var entries = function () {
+    let dir = path.resolve(__dirname, './src/entries')
+    let entryFiles = glob.sync(dir + '/*.js')
+
+    let map = {}
+
+    entryFiles.forEach(function (filePath) {
+        let filename = filePath.substring(filePath.lastIndexOf('\/') + 1, filePath.lastIndexOf('.'))
+        map[ filename ] = filePath
+    })
+    return map
+}
+
+const webpackConfig = {
+    entry: Object.assign(
+        entries(),
+        {
+            vendors: ['vue', 'vuex']
+        }
+    ),
     output: {
         path: path.resolve(__dirname, './build'),
-        publicPath: '/',
-        filename: process.env.NODE_ENV === 'development' ? 'js/[name].js' : 'js/[name].js?[chunkhash]',
+        // publicPath: '/',
+        filename: process.env.NODE_ENV === 'development' ? './js/[name].js' : './js/[name].js',
     },
     // 独立构建, 在浏览器运行的时候构建，所以引入的vue会更大一些，因为需要打包进模板编译， 通过vue-template-compiler 预编译模板
     // resolve: {
@@ -94,29 +109,39 @@ module.exports = {
         ]
     },
     plugins: [
-        // js 注入到模板内
-      new HtmlWebpackPlugin({
-          template: './src/template.html',
-          filename: 'index.html'
-      }),
+        new webpack.optimize.CommonsChunkPlugin({
+          name: ["vendors", "manifest"]
+        }),
 
-      new ExtractTextPlugin({
-          filename: 'css/style.css?[contenthash]',
-          allChunks: true
-      }),
-
-      new webpack.optimize.CommonsChunkPlugin({
-          name: ["vendor", "manifest"]
-      }),
-
-      new webpack.DefinePlugin({
+        new webpack.DefinePlugin({
           'process.env': {
               NODE_ENV: JSON.stringify( process.env.NODE_ENV )
           }
-      })
+        })
     ],
     devServer: {
-      host: '127.0.0.1',
-      port: 80
+        host: '127.0.0.1',
+        port: 80
     }
 }
+
+let files = entries()
+
+for(let filename in files) {
+
+    let htmlWebpackPlugin = new HtmlWebpackPlugin({
+        template: './src/template.html',
+        filename: filename + '.html',
+        chunks: [filename, 'vendors', 'manifest'],
+        hash: true
+    })
+
+    let extractTextPlugin = new ExtractTextPlugin({
+        filename: 'css/' + filename + '.css',
+        allChunks: true
+    })
+
+    webpackConfig.plugins.push(htmlWebpackPlugin, extractTextPlugin)
+}
+
+module.exports = webpackConfig

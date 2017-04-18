@@ -1,27 +1,14 @@
+<style lang="scss">
+</style>
 
 <template lang="html">
-
-    <component
-        :is="currentView"
-    >
-
-    </component>
+    <router-view></router-view>
 </template>
 
 <script>
-import Page from './views/Page.vue'
-
 export default {
     data () {
-        return {
-            currentView: 'page'
-        }
-    },
-    components: {
-        Page
+
     }
 }
 </script>
-
-<style lang="scss">
-</style>

@@ -22,7 +22,7 @@ const webpackConfig = {
     entry: Object.assign(
         entries(),
         {
-            vendors: ['vue', 'vuex']
+            vendors: './src/vendors.js'
         }
     ),
     output: {
@@ -129,6 +129,11 @@ let files = entries()
 
 for(let filename in files) {
 
+    let extractTextPlugin = new ExtractTextPlugin({
+        filename: './css/' + filename + '.css',
+        allChunks: true
+    })
+
     let htmlWebpackPlugin = new HtmlWebpackPlugin({
         template: './src/template.html',
         filename: filename + '.html',
@@ -136,12 +141,7 @@ for(let filename in files) {
         hash: true
     })
 
-    let extractTextPlugin = new ExtractTextPlugin({
-        filename: 'css/' + filename + '.css',
-        allChunks: true
-    })
-
-    webpackConfig.plugins.push(htmlWebpackPlugin, extractTextPlugin)
+    webpackConfig.plugins.push(extractTextPlugin, htmlWebpackPlugin)
 }
 
 module.exports = webpackConfig

@@ -1,14 +1,24 @@
 const path = require('path')
 
+const glob = require('glob')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
+
+var entries = function () {
+    let dir = path.resolve(__dirname, './src/entries')
+    let entryFiles = glob.sync(dir + '/*.js')
+
+    let map = {}
+
+    entryFiles.forEach(function (filePath) {
+        let filename = filePath.substring(filePath.lastIndexOf('\/') + 1, filePath.lastIndexOf('.'))
+        map[ filename ] = filePath
+    })
+    return map
+}
 
 const webpackConfig = {
-    entry: {
-        main: './src/main.js',
-        vendors: './src/vendors.js'
-    },
+    entry: entries(),
     output: {
         path: path.resolve(__dirname, './build'),
         // publicPath: '/',
@@ -52,16 +62,9 @@ const webpackConfig = {
                 use: {
                     loader: 'vue-loader',
                     options: {
-                      // ExtractTextPlugin 插件，单独提取css
                         loaders: {
-                            scss: ExtractTextPlugin.extract({
-                                use: 'css-loader!sass-loader!postcss-loader',
-                                fallback: 'vue-style-loader'
-                            }),
-                            css: ExtractTextPlugin.extract({
-                                loader: 'css-loader!postcss-loader',
-                                fallback: 'vue-style-loader'
-                            })
+                            scss: 'vue-style-loader!css-loader!sass-loader!postcss-loader',
+                            css: 'vue-style-loader!css-loader!sass-loader!postcss-loader'
                         }
                     }
                 }
@@ -93,30 +96,33 @@ const webpackConfig = {
     },
     plugins: [
         new webpack.optimize.CommonsChunkPlugin({
-            name: ["vendors", "manifest"]
+          name: ["vendors", "manifest"]
         }),
 
         new webpack.DefinePlugin({
-            'process.env': {
-                NODE_ENV: JSON.stringify( process.env.NODE_ENV )
-            }
-        }),
-
-        new HtmlWebpackPlugin({
-            template: './src/template.html',
-            filename: 'index.html',
-            hash: true
-        }),
-
-        new ExtractTextPlugin({
-            filename: './css/style.css',
-            allChunks: true
+          'process.env': {
+              NODE_ENV: JSON.stringify( process.env.NODE_ENV )
+          }
         })
     ],
     devServer: {
         host: '127.0.0.1',
         port: 80
     }
+}
+
+let files = entries()
+
+for(let filename in files) {
+
+    let htmlWebpackPlugin = new HtmlWebpackPlugin({
+        template: './src/template.html',
+        filename: filename + '.html',
+        chunks: [filename, 'vendors', 'manifest'],
+        hash: true
+    })
+
+    webpackConfig.plugins.push(htmlWebpackPlugin)
 }
 
 module.exports = webpackConfig

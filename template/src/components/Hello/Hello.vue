@@ -24,7 +24,7 @@ export default {
 
         &title {
             display: flex;
-            color: blue;
+            color: #333;
         }
     }
 </style>

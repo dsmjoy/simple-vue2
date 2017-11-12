@@ -5,9 +5,9 @@ import Router from 'vue-router'
 
 Vue.config.devtools = true
 
-import App from '../app.vue'
-import store from '../store/index'
-import router from '../route/index'
+import App from './app/app.vue'
+import store from 'Store/index'
+import router from 'Router/index'
 
 new Vue({
     el: '#app',

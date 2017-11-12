@@ -7,8 +7,8 @@ Vue.use(Router)
 
 Vue.config.devtools = true
 
-import App from '../app.vue'
-import store from '../store/index'
+import Login from './login/login.vue'
+import store from 'Store/index'
 
 const routes = [
 
